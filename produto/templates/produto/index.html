@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block titulo %}
+    Venda de Produtos
+{% endblock %}
+
+{% block corpo %}
+<br>
+<div id="form">
+    {% include 'produto/cadastra_produto.html' %}
+</div>
+<br>
+<div id="tabela">
+    {% include 'produto/lista_de_produtos.html' %}
+</div>
+<br/>
+<br/>
+<br/>
+
+{% endblock %}
+
+{% block domready %}
+    $.get("{% url 'produto:cadastra_produto' %}", function(resposta){
+        $("#form").html(resposta)
+    }
+
+    $.get("{% url 'produto:lista_produto' %}",function(resposta){
+        $("#tabela").html(resposta)
+    })
+{% endblock %}
