@@ -19,13 +19,18 @@
 <br/>
 
 {% endblock %}
-
 {% block domready %}
-    $.get("{% url 'produto:cadastra_produto' %}", function(resposta){
-        $("#form").html(resposta)
-    }
+    <script>
+        $(document).ready(function (){
 
-    $.get("{% url 'produto:lista_produto' %}",function(resposta){
-        $("#tabela").html(resposta)
-    })
+            $.get("{% url 'produto:cadastra_produto' %}", function(resposta){
+                $("#form").html(resposta)
+            }
+
+            $.get("{% url 'produto:lista_produto' %}",function(resposta){
+                $("#tabela").html(resposta)
+            })
+
+        })
+    </script>
 {% endblock %}

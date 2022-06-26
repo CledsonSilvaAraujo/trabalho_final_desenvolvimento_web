@@ -39,22 +39,7 @@
                </div>
             </div>
          </div>
-<!--         <div class="col-xl-6">-->
-<!--            <div class="row">-->
-<!--               <label for="id_data_cadastro" class="col-xl-3 font-weight-bold">Data Cadastro</label>-->
-<!--               <div class="col-xl-9">-->
-<!--                  {{ form.data_cadastro }}-->
-<!--                  {# <input type="text" name="data_cadastro" required="" id="id_data_cadastro"> #}-->
-<!--                  {% if form.data_cadastro.errors %}-->
-<!--                     <div class="alert alert-danger mb-0" role="alert" style="padding-top: 2px; padding-bottom: 2px">-->
-<!--                        {% for error in form.data_cadastro.errors %}-->
-<!--                           <small>{{ error }}</small>-->
-<!--                        {% endfor %}-->
-<!--                     </div>-->
-<!--                  {% endif %}-->
-<!--               </div>-->
-<!--            </div>-->
-<!--         </div>-->
+
       </div>
 
       <div class="row mb-xl-3">
@@ -154,5 +139,12 @@
 
    $('#id_data_cadastro').mask('00/00/0000')
 
+   $('#botao').click( function(){
+      const form = $(this).closest('form')
+      const url = form.attr('action')
+      const formData = form.serializeArray()
+      $.post(url, formData, function(response){
+         $('#form').html(reponse)
+   })
 
 {% endblock %}
