@@ -21,14 +21,6 @@
                <label for="id_categoria" class="col-xl-2 font-weight-bold">Categoria</label>
                <div class="col-xl-10">
                   {{ form.categoria }}
-                  {% comment %}
-                     <select name="categoria" required="" id="id_categoria">
-                        <option value="" selected="">---------</option>
-                        <option value="1">Carro</option>
-                        <option value="2">Comida</option>
-                        <option value="3">Computador</option>
-                     </select>
-                  {% endcomment %}
                   {% if form.categoria.errors %}
                      <div class="alert alert-danger mb-0" role="alert" style="padding-top: 2px; padding-bottom: 2px">
                         {% for error in form.categoria.errors %}
@@ -39,7 +31,6 @@
                </div>
             </div>
          </div>
-
       </div>
 
       <div class="row mb-xl-3">
@@ -48,7 +39,6 @@
                <label for="id_nome" class="col-xl-2 font-weight-bold">Nome</label>
                <div class="col-xl-10">
                   {{ form.nome }}
-                  {# <input type="text" name="nome" maxlength="100" required="" id="id_nome"> #}
                   {% if form.nome.errors %}
                      <div class="alert alert-danger mb-0" role="alert" style="padding-top: 2px; padding-bottom: 2px">
                         {% for error in form.nome.errors %}
@@ -69,7 +59,6 @@
                <label for="id_quantidade" class="col-xl-2 font-weight-bold">Quantidade</label>
                <div class="col-xl-10">
                   {{ form.quantidade }}
-                  {# <input type="number" name="quantidade" value="0" required="" id="id_quantidade"> #}
                   {% if form.quantidade.errors %}
                      <div class="alert alert-danger mb-0" role="alert" style="padding-top: 2px; padding-bottom: 2px">
                         {% for error in form.quantidade.errors %}
@@ -89,7 +78,6 @@
                <label for="id_preco" class="col-xl-2 font-weight-bold">Preço</label>
                <div class="col-xl-10">
                   {{ form.preco }}
-                  {# <input type="number" name="preco" value="0" step="0.01" required="" id="id_preco"> #}
                   {% if form.preco.errors %}
                      <div class="alert alert-danger mb-0" role="alert" style="padding-top: 2px; padding-bottom: 2px">
                         {% for error in form.preco.errors %}
@@ -107,7 +95,7 @@
             <div class="row">
                <div class="col-xl-10 offset-xl-2">
                   {% csrf_token %}
-                  <button id="botao" type="submit" class="btn btn-primary">
+                  <button id="botao" type="button" class="btn btn-primary cadastrar_produto">
                         <img src="{% static 'images/skin/database_add.png' %}"> Cadastrar
                   </button>
                </div>
@@ -117,34 +105,42 @@
 
    </form>
 
+   
+   
+   {% endblock %}
+   
+ 
+     
+         {% block domready %}
 
-{% endblock %}
+      
 
-{% block domready %}
+            const criarNovaLinha = (response, penultimo_tr) => {
+               let novo_tr = penultimo_tr.clone()
+               let novo_tr_nome = novo_tr.find(".produto_nome").text(response.nome)
+               let novo_tr_categoria = novo_tr.find(".produto_categoria").text(response.categoria)
+               let novo_tr_preco = novo_tr.find(".produto_preco").text("").append("R$ ").append(response.preco)
+               let novo_tr_input_id = novo_tr.find("#id_produto_id").val(response.id)
+               let novo_tr_quantidade = novo_tr.find("#id_quantidade").val(response.quantidade)
 
-   $('#id_data_cadastro').datepicker({
-       changeMonth: true,
-       changeYear: true,
-       yearRange: "-3:+0",
-       dateFormat: 'dd/mm/yy',
-       dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
-       dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
-       dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
-       monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-       monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
-       nextText: 'Próximo',
-       prevText: 'Anterior',
-       showOn: 'focus',
-   })
+               
+               penultimo_tr.after(novo_tr)
+            }
+            
+         
+            $('#botao').click( function(){
+               const form = $(this).closest('form')
+               const url = form.attr('action')
+               const formData = form.serializeArray()
+               const penultimo_tr = $('.table tr:last').prev()
 
-   $('#id_data_cadastro').mask('00/00/0000')
-
-   $('#botao').click( function(){
-      const form = $(this).closest('form')
-      const url = form.attr('action')
-      const formData = form.serializeArray()
-      $.post(url, formData, function(response){
-         $('#form').html(reponse)
-   })
-
-{% endblock %}
+               $.post(url, formData, function(response){
+                  console.log(response)
+                  criarNovaLinha(response, penultimo_tr)
+                  
+               })
+            })
+   
+   
+         {% endblock %}
+ 

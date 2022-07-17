@@ -1,36 +1,56 @@
 {% extends 'base.html' %}
 
 {% load static %}
+
 {% block titulo %}
     Venda de Produtos
 {% endblock %}
 
 {% block corpo %}
-<br>
-<div id="form">
-    {% include 'produto/cadastra_produto.html' %}
-</div>
-<br>
-<div id="tabela">
-    {% include 'produto/lista_de_produtos.html' %}
-</div>
-<br/>
-<br/>
-<br/>
+    <br>
+        <div id="form">
 
+        </div>
+    <br>
+        <div id="tabela">
+
+        </div>
+    <br/>
+    <br/>
+    <br/>
 {% endblock %}
-{% block domready %}
-    <script>
-        $(document).ready(function (){
 
-            $.get("{% url 'produto:cadastra_produto' %}", function(resposta){
-                $("#form").html(resposta)
+
+ 
+
+{%block domready%}   
+$(document).ready(function(){
+
+    
+        $.ajax({
+            url: '{% url "produto:cadastra_produto" %}',
+            type: 'GET',
+            dataType: 'html',
+            success: function(data){
+                $('#form').html(data);
             }
+        });
 
-            $.get("{% url 'produto:lista_produto' %}",function(resposta){
-                $("#tabela").html(resposta)
-            })
+        $.ajax({
+            url: '{% url "produto:lista_produto" %}',
+            type: 'GET',
+            dataType: 'html',
+            success: function(data){
+                $('#tabela').html(data);
+            }
+        });
 
-        })
-    </script>
-{% endblock %}
+
+
+    });
+    
+    
+
+
+    
+{%endblock%}

@@ -3,7 +3,7 @@ from django.core.validators import RegexValidator
 
 from categoria.models import Categoria
 from produto.models import Produto
-from projeto import settings
+from trabalho6 import settings
 
 
 class PesquisaProdutoForm(forms.Form):
@@ -12,7 +12,6 @@ class PesquisaProdutoForm(forms.Form):
         widget=forms.TextInput(attrs={'class': 'form-control form-control-sm', 'maxlength': '100'}),
         required=False)
 
-    # <input type="text" name="nome" id="id_nome" class="form-control form-control-sm" maxlength="100">
 
 
 class ProdutoForm(forms.ModelForm):
@@ -56,3 +55,17 @@ class ProdutoForm(forms.ModelForm):
         })
 
 
+
+
+class QuantidadeForm(forms.Form):
+
+    produto_id = forms.CharField(widget=forms.HiddenInput())
+
+    quantidade = forms.IntegerField(
+        min_value=0,
+        max_value=99,
+        widget=forms.TextInput(attrs={'class': 'form-control btn-secondary quantidade border-0',
+                                      'style': 'text-align: center; background-color: #6c757d; width: 70px;',
+                                      }),
+        required=True
+    )

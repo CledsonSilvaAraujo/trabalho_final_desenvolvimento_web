@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load humanize %}
+
+
+{% block corpo %}
+
+   <div id="tabela">
+      <div class="mt-3 mb-4">
+         <h5 class="mb-2 text-primary">Lista de Produtos</h5>
+      </div>
+
+      <div class="table-responsive mb-3">
+         <table class="table table-sm" id="tabela">
+            <colgroup>
+               <col width="40%">
+               <col width="15%">
+               <col width="15%">
+               <col width="15%">
+               <col width="15%">
+            </colgroup>
+            <thead>
+               <tr>
+                  <th class="text-center">Nome</th>
+                  <th class="text-center">Categoria</th>
+                  <th class="text-center">Quantidade</th>
+                  <th class="text-center">Preço</th>
+                  <th class="text-center">Remover</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% for produtos, form in listas %}
+                  <tr>
+                     <td class="text-left align-middle">
+                        <div class="media">
+                           <div class="media-body">
+                              <h6 class="mt-2">
+                                 <a class="produto_nome" style="text-decoration: none" href="{{ produtos.produto.get_absolute_url }}"
+                                    tabindex="-1">
+                                    {{ produtos.nome}}
+                                 </a>
+                              </h6>
+                           </div>
+                        </div>
+                     </td>
+
+                     <td class="text-center align-middle produto_categoria">
+                        {{ produtos.categoria }}
+
+                     </td>
+
+                     <td class="text-center align-middle">
+                        <form class="mx-auto" style="width: 60px;"
+                        action="{% url 'produto:edita_produto' %}"
+                              method ="POST" novalidate>
+                           {% csrf_token %}
+                           {{ form.produto_id }}
+                           {{ form.quantidade }}
+                        </form>
+                     </td>
+
+                     <td class="text-right pr-5 align-middle produto_preco">
+                        R$ {{ produtos.preco | intcomma }}
+                     </td>
+
+                     <td class="text-center align-middle">
+                        <form 
+                              action="{% url 'produto:deleta_produto' %}"
+                              method ="post" novalidate>
+                           {% csrf_token %}
+                           {{ form.produto_id }}
+                           <button style="margin-top: 0px; margin-bottom: 0px;
+                                          padding-top: 3px; padding-bottom: 3px;
+                                          width: 40px"
+                                   type="button"
+                                   class="btn btn-sm btn-danger remover"
+                                   tabindex="-1">
+                              <img src="{% static 'images/skin/remove.png' %}">
+                           </button>
+                        </form>
+                     </td>
+                     
+                  </tr>
+               {% endfor %}
+               <tr>
+                  <td colspan="3">
+                     <strong style="margin-left: 10px">Total do carrinho ...</strong>
+                  </td>
+                  <td class="text-right pr-5">
+                     <strong>R$</strong><strong id="valor-do-carrinho">{{ valor_total | floatformat:2 | intcomma }}</strong>
+                  </td>
+                  <td></td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+   </div>
+
+{% endblock %}
+
+{% block domready %}
+
+   $('#tabela').on('blur', "input.quantidade", function(){
+      const nova_quantidade = $(this).val()
+
+      const form = $(this).closest('form')
+      const url = form.attr('action')
+      const formData = form.serializeArray()
+
+      $.post(url, formData, function(response){
+         console.log(response)
+         $('#valor-do-carrinho').text(response.valor_total)
+      })
+
+   })
+
+
+   $('#tabela').on('click', ".remover", function(){
+      const form = $(this).closest('form')
+      form.append('<input type="hidden" name="quantidade" value="0">')
+      const url = form.attr('action')
+      const formData = form.serializeArray()
+      const tr = $(this).closest('tr')
+
+      $.post(url, formData, function(response){
+         console.log(response)
+         $('#valor-do-carrinho').text(response.valor_total)
+         tr.fadeTo(500, 0, function(){
+            tr.remove()
+         })
+
+      })
+
+   })
+
+{% endblock %}
+
+
+
+
